@@ -1,0 +1,29 @@
+[project]
+name = "noveldown"
+version = "0.1.0"
+description = "异步的小说下载器"
+readme = "README.md"
+authors = [
+    { name = "xnz233", email = "jl3362518@163.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "fastapi[standard]>=0.141.1",
+    "httpx>=0.28.1",
+    "lxml>=6.1.2",
+    "pydantic>=2.13.5",
+]
+
+[project.scripts]
+noveldown = "noveldown:main"
+
+[build-system]
+requires = ["uv_build>=0.12.3,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+]
