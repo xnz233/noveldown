@@ -1,4 +1,8 @@
+import logging
+
 import httpx
+
+logger = logging.getLogger(__name__)
 
 _client = httpx.AsyncClient(  # 设置全局客户端,是文档推荐的做法
     timeout=httpx.Timeout(30.0),
@@ -12,6 +16,7 @@ _client = httpx.AsyncClient(  # 设置全局客户端,是文档推荐的做法
 
 async def fetch(url: str) -> str:
     """异步获取网页HTML内容"""
+    logger.debug(f"下载 {url} 中")
     resp = await _client.get(url)
     resp.raise_for_status()
     return resp.text
