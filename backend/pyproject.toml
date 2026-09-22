@@ -13,10 +13,12 @@ dependencies = [
     "httpx>=0.28.1",
     "lxml>=6.1.2",
     "pydantic>=2.13.5",
+    "rich>=15.0.0",
+    "typer>=0.27.2",
 ]
 
 [project.scripts]
-noveldown = "noveldown:main"
+noveldown = "noveldown.cli:app"
 
 [build-system]
 requires = ["uv_build>=0.12.3,<0.13.0"]

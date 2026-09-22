@@ -12,7 +12,7 @@ class Scheduler:
         self.max_concurrent = max_concurrent
         self.retry_times = retry_times
         self._rules = RULE_CLASSES
-        self.sem = asyncio.Semaphore(max_concurrent)
+        self.sem = asyncio.Semaphore(max_concurrent)  # 异步信号量机制 限制并发
 
     def _get_rule(self, url: str) -> BaseRule:
         for rule_cls in self._rules:

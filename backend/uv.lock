@@ -478,6 +478,8 @@ dependencies = [
     { name = "httpx" },
     { name = "lxml" },
     { name = "pydantic" },
+    { name = "rich" },
+    { name = "typer" },
 ]
 
 [package.dev-dependencies]
@@ -493,6 +495,8 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "lxml", specifier = ">=6.1.2" },
     { name = "pydantic", specifier = ">=2.13.5" },
+    { name = "rich", specifier = ">=15.0.0" },
+    { name = "typer", specifier = ">=0.27.2" },
 ]
 
 [package.metadata.requires-dev]
