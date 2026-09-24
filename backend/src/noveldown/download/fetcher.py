@@ -1,6 +1,7 @@
 import logging
 
 import httpx
+from httpx_retries import RetryTransport
 
 logger = logging.getLogger(__name__)
 
@@ -11,6 +12,7 @@ _client = httpx.AsyncClient(  # 设置全局客户端,是文档推荐的做法
         "Accept-Language": "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3",
     },
     follow_redirects=True,
+    transport=RetryTransport(),
 )
 
 
@@ -20,3 +22,8 @@ async def fetch(url: str) -> str:
     resp = await _client.get(url)
     resp.raise_for_status()
     return resp.text
+
+
+async def fetch_chapter(index: int, url: str) -> tuple:
+    """附加索引的fetch"""
+    return (index, await fetch(url))

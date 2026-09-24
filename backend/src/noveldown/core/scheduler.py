@@ -1,16 +1,16 @@
 import asyncio
 import logging
-
-from noveldown.download import fetch
+from rich.progress import Progress
+from noveldown.download import fetch, fetch_chapter
 from noveldown.models import Book
 from noveldown.rules import RULE_CLASSES, BaseRule
 
 logger = logging.getLogger(__name__)
 
+
 class Scheduler:
-    def __init__(self, max_concurrent:int = 5, retry_times = 3):
+    def __init__(self, max_concurrent: int = 5):
         self.max_concurrent = max_concurrent
-        self.retry_times = retry_times
         self._rules = RULE_CLASSES
         self.sem = asyncio.Semaphore(max_concurrent)  # 异步信号量机制 限制并发
 
@@ -29,23 +29,29 @@ class Scheduler:
         if not chapters:
             logger.error("未解析到章节")
             raise RuntimeError("未解析到章节")
-        
-        async with self.sem:
-            tasks = [fetch(chapter.url) for chapter in chapters]
-            
-            for content_html,chapter in zip(await asyncio.gather(*tasks,return_exceptions=True),chapters):
-                if isinstance(content_html, Exception):
-                    chapter.content = "本章下载失败"
-                    logger.error(chapter.title,"下载失败")
-                    continue
-                else:
-                    chapter.content = rule.parse_content(str(content_html))
+        progress = Progress()
+        with progress:
+            async with self.sem:
+                tasks = [
+                    fetch_chapter(index, chapter.url)
+                    for index, chapter in enumerate(chapters)
+                ]
+                task_id = progress.add_task("处理中...", total=len(tasks))
+
+                for task in asyncio.as_completed(tasks):
+                    index, content_html = await task
+                    chapter = chapters[index]
+                    progress.update(task_id, advance=1)
+                    if isinstance(content_html, Exception):
+                        chapter.content = "本章下载失败"
+                        logger.error(chapter.title, "下载失败")
+                        continue
+                    else:
+                        chapter.content = rule.parse_content(str(content_html))
         info = {
-            'source_url':book_url,
-            'chapters':chapters,
-            'total_chapters':len(chapters),
-            **metadata
+            "source_url": book_url,
+            "chapters": chapters,
+            "total_chapters": len(chapters),
+            **metadata,
         }
         return Book(**info)
-
-        

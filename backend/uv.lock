@@ -314,6 +314,18 @@ wheels = [
 ]
 
 [[package]]
+name = "httpx-retries"
+version = "0.6.0"
+source = { registry = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple" }
+dependencies = [
+    { name = "httpx" },
+]
+sdist = { url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e9/d3/b7a8bb09543af40009717a08a2ceba90b6d4c6f0cdf171404217d8f4c37d/httpx_retries-0.6.0.tar.gz", hash = "sha256:3e0b404969a564829d368417964fd21e6b400a10d17c92d29b8bc247ce8186e3", size = 21122, upload-time = "2026-07-06T00:52:30.093Z" }
+wheels = [
+    { url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/56/c6/7f3d6ab3549267a1959161b38df4c0fb435eceaf2d531d8addfac01abaca/httpx_retries-0.6.0-py3-none-any.whl", hash = "sha256:d1e52a8f68a5df42de75ab89049d5020b2d0ab2f5f8bceacda008d12aa1257a3", size = 11776, upload-time = "2026-07-06T00:52:31.033Z" },
+]
+
+[[package]]
 name = "idna"
 version = "3.19"
 source = { registry = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple" }
@@ -476,6 +488,7 @@ dependencies = [
     { name = "beautifulsoup4" },
     { name = "fastapi", extra = ["standard"] },
     { name = "httpx" },
+    { name = "httpx-retries" },
     { name = "lxml" },
     { name = "pydantic" },
     { name = "rich" },
@@ -493,6 +506,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.15.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.141.1" },
     { name = "httpx", specifier = ">=0.28.1" },
+    { name = "httpx-retries", specifier = ">=0.6.0" },
     { name = "lxml", specifier = ">=6.1.2" },
     { name = "pydantic", specifier = ">=2.13.5" },
     { name = "rich", specifier = ">=15.0.0" },

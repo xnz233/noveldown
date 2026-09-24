@@ -1,3 +1,3 @@
-from .fetcher import fetch
+from .fetcher import fetch, fetch_chapter
 
-__all__ = ["fetch"]
+__all__ = ["fetch", "fetch_chapter"]
