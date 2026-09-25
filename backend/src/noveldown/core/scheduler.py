@@ -1,6 +1,8 @@
 import asyncio
 import logging
-from rich.progress import Progress
+
+from rich.progress import Progress, SpinnerColumn
+
 from noveldown.download import fetch, fetch_chapter
 from noveldown.models import Book
 from noveldown.rules import RULE_CLASSES, BaseRule
@@ -29,13 +31,13 @@ class Scheduler:
         if not chapters:
             logger.error("未解析到章节")
             raise RuntimeError("未解析到章节")
-        progress = Progress()
+        progress = Progress(SpinnerColumn(),*Progress.get_default_columns(),)
         with progress:     
             tasks = [
                 fetch_chapter(index, chapter.url,self.sem)
                 for index, chapter in enumerate(chapters)
             ]
-            task_id = progress.add_task("处理中...", total=len(tasks))
+            task_id = progress.add_task("下载中...", total=len(tasks))
 
             for task in asyncio.as_completed(tasks):
                 index, content_html = await task

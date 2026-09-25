@@ -19,7 +19,7 @@ _client = httpx.AsyncClient(  # 设置全局客户端,是文档推荐的做法
 
 async def fetch(url: str) -> str:
     """异步获取网页HTML内容"""
-    logger.info(f"下载 {url} 中")
+    logger.debug(f"下载 {url} 中")
     resp = await _client.get(url)
     resp.raise_for_status()
     return resp.text
