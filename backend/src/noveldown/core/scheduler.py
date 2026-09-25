@@ -30,24 +30,23 @@ class Scheduler:
             logger.error("未解析到章节")
             raise RuntimeError("未解析到章节")
         progress = Progress()
-        with progress:
-            async with self.sem:
-                tasks = [
-                    fetch_chapter(index, chapter.url)
-                    for index, chapter in enumerate(chapters)
-                ]
-                task_id = progress.add_task("处理中...", total=len(tasks))
+        with progress:     
+            tasks = [
+                fetch_chapter(index, chapter.url,self.sem)
+                for index, chapter in enumerate(chapters)
+            ]
+            task_id = progress.add_task("处理中...", total=len(tasks))
 
-                for task in asyncio.as_completed(tasks):
-                    index, content_html = await task
-                    chapter = chapters[index]
-                    progress.update(task_id, advance=1)
-                    if isinstance(content_html, Exception):
-                        chapter.content = "本章下载失败"
-                        logger.error(chapter.title, "下载失败")
-                        continue
-                    else:
-                        chapter.content = rule.parse_content(str(content_html))
+            for task in asyncio.as_completed(tasks):
+                index, content_html = await task
+                chapter = chapters[index]
+                progress.update(task_id, advance=1)
+                if isinstance(content_html, Exception):
+                    chapter.content = "本章下载失败"
+                    logger.error(chapter.title, "下载失败")
+                    continue
+                else:
+                    chapter.content = rule.parse_content(str(content_html))
         info = {
             "source_url": book_url,
             "chapters": chapters,

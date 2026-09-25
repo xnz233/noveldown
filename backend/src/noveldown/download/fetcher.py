@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 import httpx
@@ -18,12 +19,13 @@ _client = httpx.AsyncClient(  # 设置全局客户端,是文档推荐的做法
 
 async def fetch(url: str) -> str:
     """异步获取网页HTML内容"""
-    logger.debug(f"下载 {url} 中")
+    logger.info(f"下载 {url} 中")
     resp = await _client.get(url)
     resp.raise_for_status()
     return resp.text
 
 
-async def fetch_chapter(index: int, url: str) -> tuple:
+async def fetch_chapter(index: int, url: str, sem: asyncio.Semaphore) -> tuple:
     """附加索引的fetch"""
-    return (index, await fetch(url))
+    async with sem:
+        return (index, await fetch(url))
