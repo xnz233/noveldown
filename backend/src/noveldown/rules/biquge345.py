@@ -3,13 +3,13 @@ from typing import cast
 from bs4 import BeautifulSoup, Tag
 
 from noveldown.models import Chapter
-from noveldown.rules.base import BaseRule, ChapterDict
+from noveldown.rules.base import BaseRule, MetadataDict
 
 
 class Biquge345(BaseRule):
     domain_patterns = ("biquge345.com",)
 
-    def parse_metadata(self, html: str) -> ChapterDict:
+    def parse_metadata(self, html: str) -> MetadataDict:
         soup = BeautifulSoup(html, "lxml")
 
         title_elm = soup.select_one("h1")

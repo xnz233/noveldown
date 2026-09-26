@@ -4,7 +4,7 @@ from typing import NotRequired, TypedDict
 from noveldown.models import Chapter
 
 
-class ChapterDict(TypedDict):
+class MetadataDict(TypedDict):
     author: str
     title: str
     status: str
@@ -27,7 +27,7 @@ class BaseRule(ABC):
         return False
 
     @abstractmethod
-    def parse_metadata(self, html: str) -> ChapterDict:
+    def parse_metadata(self, html: str) -> MetadataDict:
         """解析小说首页，返回元数据"""
 
     @abstractmethod
