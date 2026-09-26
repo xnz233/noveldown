@@ -9,4 +9,4 @@ class Chapter(BaseModel):
     word_count: int = 0
 
     def __str__(self):
-        return self.title + "\n" + self.content  # 用str方法返回正文
+        return self.title + "\n" + self.content + "\n" # 用str方法返回正文

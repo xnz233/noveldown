@@ -1,7 +1,7 @@
 import asyncio
 
 import typer
-from rich import print
+from rich import inspect
 
 from noveldown.core.scheduler import Scheduler
 
@@ -14,7 +14,7 @@ def download(url: str, max_concurrent: int = 12):
     scheduler = Scheduler(max_concurrent)
 
     book = asyncio.run(scheduler.download(url))
-    print(book.chapters[0])
+    inspect(book.chapters[0])
     book.to_txt()
 
 
