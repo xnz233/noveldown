@@ -27,3 +27,12 @@ def test_parse_chapter_list():
     # 暂时跳过，仅打印长度
     print(f"HTML 文件大小: {len(html)} 字符")
     assert len(html) > 1000  # 确保文件不是空的
+
+
+    # 读取本地 HTML 文件
+    content_html = FIXTURES_DIR / "biquge345_chapter_1.html"
+    with open(content_html, "r", encoding="utf-8") as f:
+        content_html = f.read()
+    content = rule.parse_content(str(content_html))
+    assert len(content) > 100
+
