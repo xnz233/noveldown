@@ -68,13 +68,7 @@ class Biquge345(BaseRule):
 
         if not content_div:
             return ""
-
-        paragraphs = content_div.find_all("p")
-        if paragraphs:
-            # 如果正文由 <p> 标签组成
-            content = "\n".join(p.get_text(strip=True) for p in paragraphs)
-        else:
-            # 否则直接获取所有文本，并用换行分割
-            content = content_div.get_text(separator="\n", strip=True)
-
+        
+        content = content_div.get_text(separator="\n", strip=True)
+        content = '\n'.join(content.split('\n')[3:])
         return content
