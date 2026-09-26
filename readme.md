@@ -6,12 +6,14 @@
 
 noveldown 是一个模块化设计的小说下载工具，核心思想是“网站适配（规则）与下载引擎分离”。添加新网站只需新增规则类，无需改动核心代码。
 
+> 当前处于开发初期，核心下载引擎已完成并可通过测试。
+
 ### 核心功能
 
 - 输入小说目录页 URL
 - 自动识别网站并匹配解析规则
 - 拉取全部章节内容
-- 导出为 TXT 或 EPUB 格式（开发中）
+- 导出为 TXT
 
 ### 技术栈
 
@@ -29,50 +31,6 @@ noveldown 是一个模块化设计的小说下载工具，核心思想是“网�
 前端
 - 待定（Vue）
 
-## 项目状态
-
-当前处于开发初期，核心下载引擎已完成并可通过测试。
-
-已完成
-- 数据模型（Book, Chapter）
-- 网络请求层（异步 fetcher）
-- 规则基类（BaseRule）及网站域名匹配
-- 具体规则：biquge345.com
-- 调度器（Scheduler）：自动匹配规则、下载全书
-- 单元测试：通过真实 URL 验证完整流程
-
-规划中
-- 书籍元信息解析（书名、作者、简介）
-- 并发下载（提升速度）
-- 失败重试机制
-- FastAPI 接口
-- 任务持久化与队列管理
-- 前端界面
-- EPUB 导出
-
-## 目录结构
-
-```
-noveldown/
-├── backend/                          # 后端（Python + uv）
-│   ├── pyproject.toml               # 项目配置与依赖
-│   └── src/
-│       └── noveldown/               # 源代码根包
-│           ├── models/              # 数据模型（Book, Chapter）
-│           ├── rules/               # 解析规则
-│           │   ├── base.py          # BaseRule 抽象基类
-│           │   └── biquge345.py     # biquge345.com 规则
-│           ├── download/            # 网络层（fetcher）
-│           ├── core/                # 调度器（Scheduler）
-│           ├── api/                 # FastAPI 路由（规划中）
-│           ├── db/                  # 数据库模型（规划中）
-│           └── utils/               # 工具函数
-├── frontend/                        # 前端（待初始化）
-├── tests/                           # 测试
-│   ├── fixtures/                    # 本地 HTML 测试文件
-│   └── test_rules.py               # 规则单元测试
-└── README.md
-```
 
 ## 安装与运行
 
@@ -112,7 +70,7 @@ uv run pytest ../tests/
 ## 添加新网站规则
 
 1. 在 `backend/src/noveldown/rules/` 下新建文件，如 `qidian.py`
-2. 继承 `BaseRule` 并实现 `parse_chapter_list` 和 `parse_content` 方法
+2. 继承 `BaseRule` 并实现抽象方法
 3. 声明类属性 `domain_patterns`，如 `["example.com"]`
 4. 在 `rules/__init__.py` 的 `RULE_CLASSES` 列表中注册
 
@@ -124,40 +82,23 @@ from noveldown.models import Chapter
 
 class QidianRule(BaseRule):
     domain_patterns = ["example.com"]
-
+    def parse_metadata(self, html: str) -> ChapterDict:
+        # 获取元数据
     def parse_chapter_list(self, html: str) -> list[Chapter]:
         # 解析章节列表
-        pass
 
     def parse_content(self, html: str) -> str:
         # 解析章节正文
-        pass
 ```
-
-## 核心设计原则
-
-- 分层模块化：规则、网络、调度、业务解耦
-- 先写抽象接口，再写具体实现
-- 网站适配（规则）与下载引擎分离
-- 异步优先：所有网络 IO 使用异步
-
----
-
-## 开发进度
-
-### 已完成
+## TODO
 - [x] 数据模型定义
 - [x] 网络层封装
 - [x] 规则基类
 - [x] biquge345.com 规则
 - [x] 调度器核心流程
 - [x] 单元测试框架
-
-### 进行中
 - [x] 书籍元信息解析
 - [x] 并发下载优化
-
-### 计划中
 - [ ] FastAPI 接口
 - [ ] 任务持久化
 - [ ] 前端界面
