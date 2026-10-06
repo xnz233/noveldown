@@ -17,6 +17,8 @@ class BaseRule(ABC):
 
     # 声明支持的域名列表
     domain_patterns: tuple[str]
+    search_url: str
+    search_method: str = "GET"
 
     @classmethod
     def supports_url(cls, url: str) -> bool:
@@ -25,6 +27,10 @@ class BaseRule(ABC):
             if pattern in url:  # 简单包含匹配
                 return True
         return False
+
+    @abstractmethod
+    def build_search_req(self, name: str) -> dict:
+        """构造搜索用的请求参数"""
 
     @abstractmethod
     def parse_metadata(self, html: str) -> MetadataDict:

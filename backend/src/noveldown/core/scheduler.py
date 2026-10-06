@@ -4,7 +4,7 @@ import logging
 from rich.progress import Progress, SpinnerColumn
 
 from noveldown.download import fetch, fetch_chapter
-from noveldown.models import Book
+from noveldown.models import Book, SearchResult
 from noveldown.rules import RULE_CLASSES, BaseRule
 
 logger = logging.getLogger(__name__)
@@ -23,6 +23,16 @@ class Scheduler:
         logger.error(f"未找到适合 {url} 的规则")
         raise ValueError(f"未找到适合 {url} 的规则")
 
+    async def search(self, name: str) -> list[SearchResult]:
+        results = []
+        for rule_cls in self._rules:
+            rule = rule_cls()
+            data = rule.build_search_req(name)
+            html = await fetch(rule.search_url, data=data)
+            results.extend(rule.parse_search_result(html))
+
+        return results
+
     async def download(self, book_url: str, rule: BaseRule | None = None) -> Book:
         rule = rule or self._get_rule(book_url)
         novel_home = await fetch(book_url)
@@ -31,10 +41,13 @@ class Scheduler:
         if not chapters:
             logger.error("未解析到章节")
             raise RuntimeError("未解析到章节")
-        progress = Progress(SpinnerColumn(),*Progress.get_default_columns(),)
-        with progress:     
+        progress = Progress(
+            SpinnerColumn(),
+            *Progress.get_default_columns(),
+        )
+        with progress:
             tasks = [
-                fetch_chapter(index, chapter.url,self.sem)
+                fetch_chapter(index, chapter.url, self.sem)
                 for index, chapter in enumerate(chapters)
             ]
             task_id = progress.add_task("下载中...", total=len(tasks))
