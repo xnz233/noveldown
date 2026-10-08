@@ -4,7 +4,7 @@ from typing import NotRequired, TypedDict
 from noveldown.models import Chapter
 
 
-class ChapterDict(TypedDict):
+class MetadataDict(TypedDict):
     author: str
     title: str
     status: str
@@ -17,6 +17,8 @@ class BaseRule(ABC):
 
     # 声明支持的域名列表
     domain_patterns: tuple[str]
+    search_url: str
+    search_method: str = "GET"
 
     @classmethod
     def supports_url(cls, url: str) -> bool:
@@ -27,7 +29,11 @@ class BaseRule(ABC):
         return False
 
     @abstractmethod
-    def parse_metadata(self, html: str) -> ChapterDict:
+    def build_search_req(self, name: str) -> dict:
+        """构造搜索用的请求参数"""
+
+    @abstractmethod
+    def parse_metadata(self, html: str) -> MetadataDict:
         """解析小说首页，返回元数据"""
 
     @abstractmethod
